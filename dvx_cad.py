@@ -79,3 +79,19 @@ def report(name, tm):
     print(f"{name:34s} watertight={tm.is_watertight} winding={tm.is_winding_consistent} "
           f"bodies={tm.body_count} size={size[0]:.1f} x {size[1]:.1f} x {size[2]:.1f} mm "
           f"volume={tm.volume / 1000:.1f} cm3 faces={len(tm.faces)}")
+
+
+def printcheck(name, tm, bed=220.0, max_overhang_mm2=1.0):
+    """Report on a part as oriented for printing (z = 0 on the bed): size, bed fit, and how much surface faces
+    down at more than 45 degrees without lying on the bed (that is what would need supports)."""
+    report(name, tm)
+    size = tm.bounds[1] - tm.bounds[0]
+    zmin = tm.bounds[0][2]
+    n = tm.face_normals
+    cz = tm.triangles_center[:, 2]
+    steep = (n[:, 2] < -0.7072) & (cz > zmin + 0.05)
+    over = float(tm.area_faces[steep].sum())
+    fits = size[0] <= bed and size[1] <= bed
+    ok = tm.is_watertight and tm.body_count == 1 and fits and over <= max_overhang_mm2
+    print(f"{'':34s} fits {bed:.0f} mm bed={fits}  overhang beyond 45 deg={over:.1f} mm2  -> {'OK' if ok else 'CHECK'}")
+    return ok
