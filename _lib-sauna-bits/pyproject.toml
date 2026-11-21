@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sauna-bits"
+version = "0.1.0"
+description = "Small parametric building blocks for 3D-printable sauna accessories (manifold3d + trimesh)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [{name = "DIVELUX"}]
+dependencies = ["manifold3d>=2.4", "trimesh>=4", "numpy"]
+
+[project.optional-dependencies]
+text = ["fonttools"]
+render = ["pillow"]
+
+[project.urls]
+Homepage = "https://diveluxsaunahat.com/pages/sauna-tools"
+
+[tool.setuptools]
+packages = ["sauna_bits"]
